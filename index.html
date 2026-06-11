@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EgoPhys: Learning Generalizable Physics Models of Deformable Objects from Egocentric Video</title>
+  <meta name="description" content="EgoPhys: A framework that constructs deformable physical digital twins from egocentric RGB-only video using generalizable priors.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="assets/ucsd-seal.png">
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top">Contents</a>
+    <div class="nav-rule"></div>
+    <ul class="nav-links">
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#generalization">Generalization</a></li>
+      <li><a href="#robot">Robot</a></li>
+      <li><a href="#dataset">Dataset</a></li>
+      <li><a href="#bibtex">BibTeX</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+<section id="top" class="hero">
+  <div class="container">
+
+    <!-- <div class="venue-badge">arXiv Preprint &nbsp;·&nbsp; 2026</div> -->
+
+    <h1>
+      <span class="brand">EgoPhys</span>
+      <span class="subtitle-text">Learning Generalizable Physics Models of Deformable Objects from Egocentric Video</span>
+    </h1>
+
+    <div class="author-list">
+      <a href="https://hjhyunjinkim.github.io/">Hyunjin Kim</a>
+      <a href="https://rogerqi.github.io/">Ri-Zhao Qiu</a>
+      <a href="https://luccachiang.github.io/">Guangqi Jiang</a>
+      <a href="https://xiaolonw.github.io/">Xiaolong Wang</a>
+    </div>
+    <div class="affiliation">
+      <a href="https://ucsd.edu" target="_blank">
+        <img src="assets/UCSanDiegoLogo-BlueGold.png" alt="UC San Diego" class="affil-logo">
+      </a>
+    </div>
+
+    <div class="hero-links">
+      <a href="#" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        arXiv
+      </a>
+      <a href="https://github.com/hjhyunjinkim/EgoPhys" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        Code
+      </a>
+      <a href="#dataset" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Dataset (Coming Soon)
+      </a>
+    </div>
+
+    <div class="hero-video-wrap reveal">
+      <video id="hero-video" autoplay muted loop playsinline preload="auto" controls>
+        <source src="assets/overview_video.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="hero-tldr reveal">EgoPhys builds generalizable physics-grounded digital twins of deformable objects from a single egocentric RGB video, enabling zero-shot transfer to unseen objects and real robot manipulation planning.</p>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     ABSTRACT
+===================================================== -->
+<section id="abstract">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Abstract</p>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="abstract-box reveal">
+      <p>
+        Humans naturally understand object physics through everyday interactions, but faithfully predicting complex deformable dynamics, such as elastic materials and fabrics, remains a major challenge for computer vision and robotics. We present <strong>EgoPhys</strong>, a framework that constructs deformable physical digital twins from egocentric RGB-only video using generalizable priors. EgoPhys overcomes the limitations of existing methods to enable controllable deformable digital twin generation from egocentric videos by distilling per-object inverse-physics solutions into a compact codebook, enabling prediction of dense spring stiffness fields for unseen objects without per-spring test-time optimization. Trained with generalizable priors from diverse egocentric interactions, EgoPhys outperforms baselines in reconstruction, future prediction, and zero-shot generalization. To support training and evaluation, we curate an egocentric interaction dataset covering diverse deformable objects, scenes, and manipulation styles. We deploy EgoPhys on a real XArm6 robot, demonstrating that a digital twin initialized from a single egocentric human play video can serve as an internal world representation to aid in deformable-object planning, highlighting egocentric RGB observations as a scalable path toward real-to-sim pipelines.
+      </p>
+    </div>
+
+    <!-- <div class="contrib-grid">
+      <div class="contrib-card reveal delay-1">
+        <div class="contrib-num">01</div>
+        <h3>Egocentric RGB-Only Digital Twins</h3>
+        <p>First framework for deformable physical twin construction from a single egocentric RGB video — no depth sensing, no calibrated multi-view capture required.</p>
+      </div>
+      <div class="contrib-card reveal delay-2">
+        <div class="contrib-num">02</div>
+        <h3>Generalizable Physics Prior</h3>
+        <p>A state-conditioned material codebook distills dense per-object spring stiffness fields into reusable physical primitives for zero-shot generalization to unseen objects.</p>
+      </div>
+      <div class="contrib-card reveal delay-3">
+        <div class="contrib-num">03</div>
+        <h3>Benchmark &amp; Robot Validation</h3>
+        <p>New egocentric deformable-object dataset with 19 sequences and successful sim-to-real deployment on a physical XArm6 robot arm without real-world fine-tuning.</p>
+      </div>
+    </div> -->
+  </div>
+</section>
+
+<!-- =====================================================
+     METHOD
+===================================================== -->
+<section id="method">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Method</p>
+      <h2 class="sec-title">How EgoPhys Works</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="method-paragraph reveal">
+      <p>
+        Given an egocentric RGB video, EgoPhys first performs <strong>4D reconstruction</strong> by tracking dense 2D point trajectories and lifting them to metrically consistent 3D coordinates, producing a coherent 4D point cloud under hand-object occlusion. The object is then modeled as a <strong>spring-mass graph</strong>, with a derivative-free optimizer estimating its physical parameters from rollout error against the observed cloud. Finally, a <strong>generalizable material codebook</strong> trained across many objects predicts dense per-spring stiffness for unseen objects at test time, requiring no per-object re-optimization.
+      </p>
+    </div>
+
+    <div class="method-figures reveal">
+      <figure class="method-fig">
+        <img src="assets/figure_one.png" alt="EgoPhys pipeline overview">
+        <!-- <figcaption>Fig. 1 — EgoPhys can create a digital twin of a deformable object with as few as one egocentric human-interaction video.</figcaption> -->
+      </figure>
+      <figure class="method-fig">
+        <img src="assets/codebook_figure.png" alt="Codebook-based physics prior">
+        <!-- <figcaption>Fig. 2 — Codebook-based physics prior. A shared codebook of material prototypes is trained over per-object spring graphs.</figcaption> -->
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     MAIN RESULTS
+===================================================== -->
+<section id="results">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Experiments</p>
+      <h2 class="sec-title">Reconstruction &amp; Future Prediction</h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">
+        EgoPhys is compared against PhysTwin and Spring-Gaus under identical egocentric observations, with all methods receiving the same inputs and evaluation protocol. <strong>EgoPhys produces more accurate and physically plausible deformations</strong> across all tested objects and interaction types.
+      </p>
+    </div>
+
+    <!-- Qualitative comparison -->
+    <div class="reveal" style="margin-top:56px;">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--ink); margin-bottom:10px;">Qualitative Comparison</h3>
+      <div class="tab-bar" id="main-tabs">
+        <button class="tab-btn active" data-target="main-0">Lion Plush · Two-Hand Lift</button>
+        <button class="tab-btn" data-target="main-1">Towel · Two-Hand Pull</button>
+        <button class="tab-btn" data-target="main-2">Fox Plush · Single-Hand Lift</button>
+        <button class="tab-btn" data-target="main-3">Oven Mitt · Single-Hand Lift</button>
+      </div>
+
+      <div id="main-0" class="tab-panel active">
+        <div class="compare-grid cols-3">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/Ours_Video/double_lift_lion.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/PhysTwin_Video/double_lift_lion.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/SpringGaus_Video/double_lift_lion.mp4" type="video/mp4"></video>
+            <div class="vid-label">Spring-Gaus</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="main-1" class="tab-panel">
+        <div class="compare-grid cols-3">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/Ours_Video/double_pull_towel.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/PhysTwin_Video/double_pull_towel.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/SpringGaus_Video/double_pull_towel.mp4" type="video/mp4"></video>
+            <div class="vid-label">Spring-Gaus</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="main-2" class="tab-panel">
+        <div class="compare-grid cols-3">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/Ours_Video/single_lift_foxplushtoy.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/PhysTwin_Video/single_lift_foxplushtoy.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/SpringGaus_Video/single_lift_foxplushtoy.mp4" type="video/mp4"></video>
+            <div class="vid-label">Spring-Gaus</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="main-3" class="tab-panel">
+        <div class="compare-grid cols-3">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/Ours_Video/single_lift_ovenmitt.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/PhysTwin_Video/single_lift_ovenmitt.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Main_Experiments/SpringGaus_Video/single_lift_ovenmitt.mp4" type="video/mp4"></video>
+            <div class="vid-label">Spring-Gaus</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     GENERALIZATION
+===================================================== -->
+<section id="generalization">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Zero-Shot Generalization</p>
+      <h2 class="sec-title">Unseen Objects &amp; Interactions</h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">
+        The learned physics prior is evaluated on <strong>11 held-out sequences</strong> never seen during training. EgoPhys predicts accurate deformations for <strong>completely new objects and interaction types</strong> without any test-time refinement, demonstrating strong zero-shot generalization.
+      </p>
+    </div>
+
+    <div class="reveal" style="margin-top:40px;">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--ink); margin-bottom:10px;">Qualitative Generalization Results</h3>
+      <div class="tab-bar" id="gen-tabs">
+        <button class="tab-btn active" data-target="gen-0">Towel · Two-Hand Pull</button>
+        <button class="tab-btn" data-target="gen-1">Alien Plush · Single-Hand Lift</button>
+        <button class="tab-btn" data-target="gen-2">Green Monster · Single-Hand Lift</button>
+        <button class="tab-btn" data-target="gen-3">Lion Plush · Single-Hand Push</button>
+        <button class="tab-btn" data-target="gen-4">Santa Plush · Single-Hand Push</button>
+      </div>
+
+      <div id="gen-0" class="tab-panel active">
+        <div class="compare-grid cols-2">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/Ours_Generalization/double_pull_towel.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/PhysTwin_Generalization/double_pull_towel.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gen-1" class="tab-panel">
+        <div class="compare-grid cols-2">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/Ours_Generalization/single_lift_alien.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/PhysTwin_Generalization/single_lift_alien.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gen-2" class="tab-panel">
+        <div class="compare-grid cols-2">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/Ours_Generalization/single_lift_greenmonster.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/PhysTwin_Generalization/single_lift_greenmonster.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gen-3" class="tab-panel">
+        <div class="compare-grid cols-2">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/Ours_Generalization/single_push_lion.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/PhysTwin_Generalization/single_push_lion.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gen-4" class="tab-panel">
+        <div class="compare-grid cols-2">
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/Ours_Generalization/single_push_santa.mp4" type="video/mp4"></video>
+            <div class="vid-label lbl-ours">EgoPhys <span class="badge-ours">Ours</span></div>
+          </div>
+          <div class="vid-card">
+            <video muted loop playsinline preload="auto"><source src="assets/Generalization_Experiments/PhysTwin_Generalization/single_push_santa.mp4" type="video/mp4"></video>
+            <div class="vid-label">PhysTwin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     ROBOT DEPLOYMENT
+===================================================== -->
+<section id="robot">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Sim-to-Real Transfer</p>
+      <h2 class="sec-title">Robot Deployment on XArm6</h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">
+        EgoPhys serves as the forward model inside an MPPI planner. Given <strong>a single egocentric video of a novel object</strong>, EgoPhys constructs a simulator, plans toward a target configuration, and transfers the trajectory to a physical XArm6 robot — <strong>with no real-world fine-tuning or per-instance re-optimization</strong>.
+      </p>
+    </div>
+
+    <div class="robot-grid">
+      <div class="robot-card reveal delay-1">
+        <video muted loop playsinline preload="auto">
+          <source src="assets/Ours_Robot_Experiments/single_lift_foxplushtoy.mp4" type="video/mp4">
+        </video>
+        <div class="robot-info">
+          <h4>Fox Plush — Lift</h4>
+          <p>Single-hand lift task.</p>
+          <div class="robot-metric">CD reduction: 16%</div>
+        </div>
+      </div>
+      <div class="robot-card reveal delay-2">
+        <video muted loop playsinline preload="auto">
+          <source src="assets/Ours_Robot_Experiments/single_lift_greenmonster.mp4" type="video/mp4">
+        </video>
+        <div class="robot-info">
+          <h4>Green Monster Plush — Lift</h4>
+          <p>Single-hand lift task on a unseen object.</p>
+          <div class="robot-metric">CD reduction: 25%</div>
+        </div>
+      </div>
+      <div class="robot-card reveal delay-3">
+        <video muted loop playsinline preload="auto">
+          <source src="assets/Ours_Robot_Experiments/single_pull_doraemon.mp4" type="video/mp4">
+        </video>
+        <div class="robot-info">
+          <h4>Doraemon Plush — Pull</h4>
+          <p>Sliding contact pull task.</p>
+          <div class="robot-metric">CD reduction: 78%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <!-- <div class="bar-chart-wrap reveal">
+      <div class="bar-chart-title">Chamfer Distance to Target — Before vs. After MPPI Planning</div>
+
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Fox Plush · Initial</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-light" style="width:calc(0.2263/0.35*100%)"></div></div>
+        <div class="bar-val">0.2263</div>
+      </div>
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Fox Plush · EgoPhys</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-navy" style="width:calc(0.1901/0.35*100%)"></div></div>
+        <div class="bar-val" style="color:var(--navy);font-weight:700;">0.1901</div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Green Monster · Initial</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-light" style="width:100%"></div></div>
+        <div class="bar-val">0.3135</div>
+      </div>
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Green Monster · EgoPhys</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-navy" style="width:calc(0.2346/0.35*100%)"></div></div>
+        <div class="bar-val" style="color:var(--navy);font-weight:700;">0.2346</div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Doraemon · Initial</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-light" style="width:calc(0.0958/0.35*100%)"></div></div>
+        <div class="bar-val">0.0958</div>
+      </div>
+      <div class="bar-chart-row">
+        <div class="bar-chart-label">Doraemon · EgoPhys</div>
+        <div class="bar-track"><div class="bar-fill bar-fill-navy" style="width:calc(0.0214/0.35*100%)"></div></div>
+        <div class="bar-val" style="color:var(--navy);font-weight:700;">0.0214</div>
+      </div>
+
+      <div class="bar-legend">
+        <div class="bar-legend-item">
+          <div class="bar-legend-dot" style="background:#b8c3e0;"></div>
+          Initial predicted state
+        </div>
+        <div class="bar-legend-item">
+          <div class="bar-legend-dot" style="background:var(--navy);"></div>
+          After EgoPhys MPPI planning
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+</section>
+
+<!-- =====================================================
+     DATASET
+===================================================== -->
+<section id="dataset">
+  <div class="container">
+    <div class="reveal">
+      <p class="sec-label">Dataset</p>
+      <h2 class="sec-title">Egocentric Interaction Dataset</h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">
+        We curate <strong>19 egocentric interaction sequences</strong> captured with a Meta Project Aria Gen 1 wearable camera. Each sequence records a user interacting with a deformable object, spanning <strong>10+ object categories</strong> across diverse backgrounds, lighting conditions, and manipulation styles.
+      </p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card reveal delay-1">
+        <div class="stat-num">19</div>
+        <div class="stat-label">Total Sequences</div>
+      </div>
+      <div class="stat-card reveal delay-2">
+        <div class="stat-num">10+</div>
+        <div class="stat-label">Object Categories</div>
+      </div>
+      <div class="stat-card reveal delay-3">
+        <div class="stat-num">~7 sec</div>
+        <div class="stat-label">Clip Length</div>
+      </div>
+      <div class="stat-card reveal delay-4">
+        <div class="stat-num">30fps</div>
+        <div class="stat-label">1408 × 1408 px</div>
+      </div>
+    </div>
+
+    <div class="dataset-grid reveal">
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/double_lift_alien.mp4" type="video/mp4"></video>
+        <div class="ds-label">Alien Plush · Two-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/double_lift_lion.mp4" type="video/mp4"></video>
+        <div class="ds-label">Lion Plush · Two-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/double_pull_towel.mp4" type="video/mp4"></video>
+        <div class="ds-label">Towel · Two-Hand Pull</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/single_lift_alien.mp4" type="video/mp4"></video>
+        <div class="ds-label">Alien Plush · Single-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/single_lift_foxplushtoy.mp4" type="video/mp4"></video>
+        <div class="ds-label">Fox Plush · Single-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/single_lift_greenmonster.mp4" type="video/mp4"></video>
+        <div class="ds-label">Green Monster · Single-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/single_lift_ovenmitt.mp4" type="video/mp4"></video>
+        <div class="ds-label">Oven Mitt · Single-Hand Lift</div>
+      </div>
+      <div class="ds-item">
+        <video muted loop playsinline preload="auto"><source src="assets/Data_Examples/single_push_lion.mp4" type="video/mp4"></video>
+        <div class="ds-label">Lion Plush · Single-Hand Push</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     BIBTEX
+===================================================== -->
+<section id="bibtex">
+  <div class="container">
+    <div class="reveal">
+      <!-- <p class="sec-label">Citation</p> -->
+      <h2 class="sec-title">BibTeX</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="bibtex-wrap reveal">
+      <button class="copy-btn" onclick="copyBibTeX()">Copy</button>
+      <pre id="bibtex-text"><!-- BibTeX entry will be added here --></pre>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+<script>
+  // ── Scroll reveal ─────────────────────────────────────
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ── Auto-play ALL videos on scroll ────────────────────
+  // For tab panel videos, only play if their panel is currently active
+  const autoplayObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const panel = e.target.closest('.tab-panel');
+      const panelOk = !panel || panel.classList.contains('active');
+      if (e.isIntersecting && panelOk) {
+        e.target.play().catch(() => {});
+      } else if (!e.isIntersecting) {
+        e.target.pause();
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('video').forEach(v => autoplayObs.observe(v));
+
+  // ── Tab system ────────────────────────────────────────
+  function switchTab(barId, targetId) {
+    const bar = document.getElementById(barId);
+    if (!bar) return;
+    const container = bar.parentElement;
+
+    bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = bar.querySelector(`[data-target="${targetId}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    container.querySelectorAll('.tab-panel').forEach(p => {
+      p.classList.remove('active');
+      p.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+    });
+
+    const panel = document.getElementById(targetId);
+    if (panel) {
+      panel.classList.add('active');
+      // Re-observe so autoplayObs picks up the newly active videos
+      panel.querySelectorAll('video').forEach(v => {
+        autoplayObs.unobserve(v);
+        autoplayObs.observe(v);
+        v.play().catch(() => {});
+      });
+    }
+  }
+
+  ['main-tabs', 'gen-tabs'].forEach(barId => {
+    const bar = document.getElementById(barId);
+    if (!bar) return;
+    bar.addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn || !btn.dataset.target) return;
+      switchTab(barId, btn.dataset.target);
+    });
+  });
+
+
+  // ── BibTeX copy ────────────────────────────────────────
+  function copyBibTeX() {
+    const text = document.getElementById('bibtex-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  // ── Active nav link on scroll ──────────────────────────
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-links li');
+
+  const sectionObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(li => li.classList.remove('active'));
+        const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (active) active.closest('li').classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => sectionObs.observe(s));
+</script>
+</body>
+</html>
