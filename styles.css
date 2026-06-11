@@ -450,14 +450,10 @@ section:nth-child(even) .tab-btn.active {
 }
 
 .tab-panel {
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
+  display: none;
 }
 .tab-panel.active {
-  visibility: visible;
-  height: auto;
-  overflow: visible;
+  display: block;
 }
 
 .compare-grid {
