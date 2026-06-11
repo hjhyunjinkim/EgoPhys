@@ -890,4 +890,12 @@ hr.thin {
   .compare-grid.cols-3,
   .compare-grid.cols-2 { grid-template-columns: 1fr; }
   .bar-chart-label { width: 100px; font-size: 0.72rem; }
+
+  .hero h1 .brand { font-size: 3.4rem; }
+  .hero h1 .subtitle-text { font-size: 1.55rem; }
+  .author-list a { font-size: 0.92rem; }
+  .author-list { gap: 4px 16px; }
+  .affil-logo { height: 24px; }
+  .hero .container { padding-left: 10px; padding-right: 10px; }
+  .hero-video-wrap { margin-left: -10px; margin-right: -10px; border-radius: 4px; }
 }
