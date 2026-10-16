@@ -169,24 +169,47 @@ nav {
   color: var(--navy);
   border-color: var(--navy);
 }
+.author-list sup {
+  color: var(--navy);
+  font-size: 0.65em;
+  margin-left: 2px;
+  vertical-align: super;
+}
 
 .affiliation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
   margin-top: 20px;
   margin-bottom: 36px;
 }
 .affiliation a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
   text-decoration: none;
   opacity: 0.85;
   transition: opacity 0.2s;
 }
 .affiliation a:hover { opacity: 1; }
+.affiliation-number {
+  color: var(--navy);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+}
 .affil-logo {
   height: 36px;
   width: auto;
   display: block;
   /* The PNG has a black background — mix-blend-mode removes it on the cream bg */
   mix-blend-mode: multiply;
+}
+.affil-logo-umd {
+  height: 64px;
 }
 
 .hero-links {
@@ -562,6 +585,21 @@ tbody td:first-child { text-align: left; color: var(--ink); }
   gap: 20px;
   margin-top: 40px;
 }
+.robot-platform-heading {
+  margin-top: 40px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+.robot-platform-heading + .robot-grid {
+  margin-top: 16px;
+}
+.robot-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.robot-grid-two .robot-card video {
+  aspect-ratio: 16 / 9;
+}
 .robot-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -581,32 +619,16 @@ tbody td:first-child { text-align: left; color: var(--ink); }
   object-fit: cover;
   background: #eee;
 }
-.robot-info { padding: 18px 20px; }
+.robot-info {
+  padding: 8px 16px;
+  text-align: center;
+}
 .robot-info h4 {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 6px;
+  margin: 0;
 }
-.robot-info p {
-  font-size: 0.82rem;
-  color: var(--ink3);
-  line-height: 1.6;
-}
-.robot-metric {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  padding: 3px 10px;
-  border-radius: 4px;
-  background: var(--navy-light);
-  color: var(--navy);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
 /* =====================================================
    BAR CHART
 ===================================================== */

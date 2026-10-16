@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EgoPhys: Learning Generalizable Physics Models of Deformable Objects from Egocentric Video</title>
-  <meta name="description" content="EgoPhys: A framework that constructs deformable physical digital twins from egocentric RGB-only video using generalizable priors.">
+  <title>EgoPhys: Physics-Informed Digital Twins for Deformable Objects from Egocentric Video</title>
+  <meta name="description" content="EgoPhys: A framework that builds predictive deformable physical twins from egocentric RGB video using sequence-specific identification and shared residual refinement.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +37,7 @@
       <li><a href="#abstract">Abstract</a></li>
       <li><a href="#method">Method</a></li>
       <li><a href="#results">Results</a></li>
-      <li><a href="#generalization">Generalization</a></li>
+      <li><a href="#generalization">Residual Model</a></li>
       <li><a href="#robot">Robot</a></li>
       <li><a href="#dataset">Dataset</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
@@ -55,17 +55,26 @@
 
     <h1>
       <span class="brand">EgoPhys</span>
-      <span class="subtitle-text">Learning Generalizable Physics Models of Deformable Objects from Egocentric Video</span>
+      <span class="subtitle-text">Physics-Informed Digital Twins for Deformable Objects from Egocentric Video</span>
     </h1>
 
     <div class="author-list">
-      <a href="https://hjhyunjinkim.github.io/">Hyunjin Kim</a>
-      <a href="https://rogerqi.github.io/">Ri-Zhao Qiu</a>
-      <a href="https://luccachiang.github.io/">Guangqi Jiang</a>
-      <a href="https://xiaolonw.github.io/">Xiaolong Wang</a>
+      <a href="https://hjhyunjinkim.github.io/">Hyunjin Kim<sup>1</sup></a>
+      <a href="https://rogerqi.github.io/">Ri-Zhao Qiu<sup>2</sup></a>
+      <a href="https://rocktimjyotidas.github.io/">Rocktim Jyoti Das<sup>1</sup></a>
+      <a href="https://luccachiang.github.io/">Guangqi Jiang<sup>2</sup></a>
+    </div>
+    <div class="author-list">
+      <a href="https://www.cs.umd.edu/people/dmanocha">Dinesh Manocha<sup>1</sup></a>
+      <a href="https://xiaolonw.github.io/">Xiaolong Wang<sup>2</sup></a>
     </div>
     <div class="affiliation">
-      <a href="https://ucsd.edu" target="_blank">
+      <a href="https://umd.edu" target="_blank" rel="noopener">
+        <span class="affiliation-number">1</span>
+        <img src="assets/umd.png" alt="UMD" class="affil-logo affil-logo-umd">
+      </a>
+      <a href="https://ucsd.edu" target="_blank" rel="noopener">
+        <span class="affiliation-number">2</span>
         <img src="assets/UCSanDiegoLogo-BlueGold.png" alt="UC San Diego" class="affil-logo">
       </a>
     </div>
@@ -90,7 +99,7 @@
         <source src="assets/overview_video.mp4" type="video/mp4">
       </video>
     </div>
-    <p class="hero-tldr reveal">EgoPhys builds generalizable physics-grounded digital twins of deformable objects from a single egocentric RGB video, enabling zero-shot transfer to unseen objects and real robot manipulation planning.</p>
+    <p class="hero-tldr reveal">EgoPhys turns a single egocentric RGB interaction into a predictive deformable physical twin, using shared residual physics to improve held-out prediction and enable robot planning and physical execution.</p>
 
   </div>
 </section>
@@ -106,7 +115,7 @@
     </div>
     <div class="abstract-box reveal">
       <p>
-        Humans naturally understand object physics through everyday interactions, but faithfully predicting complex deformable dynamics, such as elastic materials and fabrics, remains a major challenge for computer vision and robotics. We present <strong>EgoPhys</strong>, a framework that constructs deformable physical digital twins from egocentric RGB-only video using generalizable priors. EgoPhys overcomes the limitations of existing methods to enable controllable deformable digital twin generation from egocentric videos by distilling per-object inverse-physics solutions into a compact codebook, enabling prediction of dense spring stiffness fields for unseen objects without per-spring test-time optimization. Trained with generalizable priors from diverse egocentric interactions, EgoPhys outperforms baselines in reconstruction, future prediction, and zero-shot generalization. To support training and evaluation, we curate an egocentric interaction dataset covering diverse deformable objects, scenes, and manipulation styles. We deploy EgoPhys on a real XArm6 robot, demonstrating that a digital twin initialized from a single egocentric human play video can serve as an internal world representation to aid in deformable-object planning, highlighting egocentric RGB observations as a scalable path toward real-to-sim pipelines.
+        Humans naturally understand object physics through everyday interactions, but predicting how deformable objects, such as soft objects and fabrics, respond to manipulation remains a major challenge for computer vision and robotics. Existing deformable physical twin methods typically rely on controlled multi-view or depth capture and costly per-object physical refinement. We present <b>EgoPhys</b>, a framework for constructing predictive deformable physical twins from a single egocentric RGB interaction. EgoPhys combines persistent correspondences with per-frame monocular 3D observations to fit a sequence-specific spring-mass model from moving-camera observations. Because a short interaction weakly constrains fine-grained local stiffness, EgoPhys amortizes this refinement across training interactions using a compact state-conditioned residual model that predicts bounded local corrections around the sequence-specific estimate and remains frozen at test time. Experiments show improved held-out future prediction over adapted deformable-twin baselines, with the amortized residual further improving prediction while reducing local-refinement cost by approximately 10x-59x over dense per-spring optimization. The resulting twins also support deformable-object action selection, with representative physical robot manipulation providing a qualitative proof of concept.
       </p>
     </div>
 
@@ -143,18 +152,18 @@
 
     <div class="method-paragraph reveal">
       <p>
-        Given an egocentric RGB video, EgoPhys first performs <strong>4D reconstruction</strong> by tracking dense 2D point trajectories and lifting them to metrically consistent 3D coordinates, producing a coherent 4D point cloud under hand-object occlusion. The object is then modeled as a <strong>spring-mass graph</strong>, with a derivative-free optimizer estimating its physical parameters from rollout error against the observed cloud. Finally, a <strong>generalizable material codebook</strong> trained across many objects predicts dense per-spring stiffness for unseen objects at test time, requiring no per-object re-optimization.
+        Given a single egocentric RGB video, EgoPhys combines <strong>persistent image correspondences</strong> with per-frame monocular 3D observations to recover object and manipulator motion. It then fits a <strong>sequence-specific spring-mass model</strong> with CMA-ES, using geometry, tracked motion, and temporal-smoothness losses together with egocentric adaptations for uncertain contact, support height, and thin objects. Starting from the identified global stiffness, a frozen <strong>state-conditioned residual model</strong> uses tension and compression codebooks plus a confidence gate to predict bounded local corrections, avoiding dense per-spring test-time optimization.
       </p>
     </div>
 
     <div class="method-figures reveal">
       <figure class="method-fig">
-        <img src="assets/figure_one.png" alt="EgoPhys pipeline overview">
-        <!-- <figcaption>Fig. 1 — EgoPhys can create a digital twin of a deformable object with as few as one egocentric human-interaction video.</figcaption> -->
+        <img src="assets/figure_one_new.png" alt="Egocentric motion observation pipeline">
+        <!-- <figcaption>Fig. 1 — Persistent correspondences and per-frame monocular 3D predictions provide motion constraints for sequence-specific spring-mass fitting.</figcaption> -->
       </figure>
       <figure class="method-fig">
-        <img src="assets/codebook_figure.png" alt="Codebook-based physics prior">
-        <!-- <figcaption>Fig. 2 — Codebook-based physics prior. A shared codebook of material prototypes is trained over per-object spring graphs.</figcaption> -->
+        <img src="assets/codebook_figure_new.png" alt="Shared residual physics model">
+        <!-- <figcaption>Fig. 2 — A frozen shared residual model predicts bounded, state-conditioned stiffness corrections around each sequence-specific estimate.</figcaption> -->
       </figure>
     </div>
   </div>
@@ -167,10 +176,10 @@
   <div class="container">
     <div class="reveal">
       <p class="sec-label">Experiments</p>
-      <h2 class="sec-title">Reconstruction &amp; Future Prediction</h2>
+      <h2 class="sec-title">Resimulation &amp; Future Prediction</h2>
       <div class="sec-rule"></div>
       <p class="sec-desc">
-        EgoPhys is compared against PhysTwin and Spring-Gaus under identical egocentric observations, with all methods receiving the same inputs and evaluation protocol. <strong>EgoPhys produces more accurate and physically plausible deformations</strong> across all tested objects and interaction types.
+        Using identical egocentric observations and a 70/30 temporal split, EgoPhys is compared with adapted PhysTwin and Spring-Gaus baselines. Its sequence-specific twin achieves <strong>better resimulation and held-out future prediction</strong>, reaching 0.028 Chamfer distance and 0.052 tracking error on future frames before shared residual refinement.
       </p>
     </div>
 
@@ -256,25 +265,25 @@
 </section>
 
 <!-- =====================================================
-     GENERALIZATION
+     SHARED RESIDUAL REFINEMENT
 ===================================================== -->
 <section id="generalization">
   <div class="container">
     <div class="reveal">
-      <p class="sec-label">Zero-Shot Generalization</p>
-      <h2 class="sec-title">Unseen Objects &amp; Interactions</h2>
+      <p class="sec-label">Shared Residual Refinement</p>
+      <h2 class="sec-title">Held-Out Interactions</h2>
       <div class="sec-rule"></div>
       <p class="sec-desc">
-        The learned physics prior is evaluated on <strong>11 held-out sequences</strong> never seen during training. EgoPhys predicts accurate deformations for <strong>completely new objects and interaction types</strong> without any test-time refinement, demonstrating strong zero-shot generalization.
+        Across <strong>11 held-out interactions</strong>—four new actions on seen instances and seven unseen instances—the frozen residual improves independently identified sequence-specific twins without dense per-spring test-time optimization. It reduces aggregate future CD from 0.0364 to 0.0319 and TE from 0.0696 to 0.0621, with gains also holding on the unseen towel subset.
       </p>
     </div>
 
     <div class="reveal" style="margin-top:40px;">
-      <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--ink); margin-bottom:10px;">Qualitative Generalization Results</h3>
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--ink); margin-bottom:10px;">Qualitative Held-Out Results</h3>
       <div class="tab-bar" id="gen-tabs">
         <button class="tab-btn active" data-target="gen-0">Towel · Two-Hand Pull</button>
         <button class="tab-btn" data-target="gen-1">Alien Plush · Single-Hand Lift</button>
-        <button class="tab-btn" data-target="gen-2">Greenmonster Plush · Single-Hand Lift</button>
+        <button class="tab-btn" data-target="gen-2">Avocado Plush · Single-Hand Lift</button>
         <button class="tab-btn" data-target="gen-3">Lion Plush · Single-Hand Push</button>
         <button class="tab-btn" data-target="gen-4">Santa Plush · Single-Hand Push</button>
       </div>
@@ -348,19 +357,20 @@
 </section>
 
 <!-- =====================================================
-     ROBOT DEPLOYMENT
+     PLANNING AND PHYSICAL EXECUTION
 ===================================================== -->
 <section id="robot">
   <div class="container">
     <div class="reveal">
-      <p class="sec-label">Sim-to-Real Transfer</p>
-      <h2 class="sec-title">Robot Deployment on XArm6</h2>
+      <p class="sec-label">Planning &amp; Physical Execution</p>
+      <h2 class="sec-title">Planning and Robot Execution</h2>
       <div class="sec-rule"></div>
       <p class="sec-desc">
-        EgoPhys serves as the forward model inside an MPPI planner. Given <strong>a single egocentric video of a novel object</strong>, EgoPhys constructs a simulator, plans toward a target configuration, and transfers the trajectory to a physical XArm6 robot — <strong>with no real-world fine-tuning or per-instance re-optimization</strong>.
+        EgoPhys and adapted PhysTwin serve as forward models for MPPI planning on 11 held-out interactions. Under the same frozen evaluator, <strong>EgoPhys lowers geometry and tracking error and raises planning success from 36.4% to 42.4%</strong>. Representative trajectories are transferred open-loop to an XArm6 and UR3e without re-identifying the physical model.
       </p>
     </div>
 
+    <h3 class="robot-platform-heading reveal">XArm6 Executions</h3>
     <div class="robot-grid">
       <div class="robot-card reveal delay-1">
         <video muted loop playsinline preload="none">
@@ -368,8 +378,6 @@
         </video>
         <div class="robot-info">
           <h4>Fox Plush — Lift</h4>
-          <p>Single-hand lift task.</p>
-          <div class="robot-metric">CD reduction: 16%</div>
         </div>
       </div>
       <div class="robot-card reveal delay-2">
@@ -377,9 +385,7 @@
           <source data-src="assets/optimized/single_lift_greenmonster.mp4" type="video/mp4">
         </video>
         <div class="robot-info">
-          <h4>Green Monster Plush — Lift</h4>
-          <p>Single-hand lift task on a unseen object.</p>
-          <div class="robot-metric">CD reduction: 25%</div>
+          <h4>Avocado Plush — Lift</h4>
         </div>
       </div>
       <div class="robot-card reveal delay-3">
@@ -388,8 +394,26 @@
         </video>
         <div class="robot-info">
           <h4>Doraemon Plush — Pull</h4>
-          <p>Sliding contact pull task.</p>
-          <div class="robot-metric">CD reduction: 78%</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="robot-platform-heading reveal">UR3e Executions</h3>
+    <div class="robot-grid robot-grid-two">
+      <div class="robot-card reveal delay-1">
+        <video muted loop playsinline preload="none">
+          <source data-src="assets/optimized/ur3e_chicken.mp4" type="video/mp4">
+        </video>
+        <div class="robot-info">
+          <h4>Chicken Plush — Lift</h4>
+        </div>
+      </div>
+      <div class="robot-card reveal delay-2">
+        <video muted loop playsinline preload="none">
+          <source data-src="assets/optimized/ur3e_rope.mp4" type="video/mp4">
+        </video>
+        <div class="robot-info">
+          <h4>Rope — Lift</h4>
         </div>
       </div>
     </div>
@@ -460,7 +484,7 @@
       <h2 class="sec-title">Egocentric Interaction Dataset</h2>
       <div class="sec-rule"></div>
       <p class="sec-desc">
-        We curate <strong>19 egocentric interaction sequences</strong> captured with a Meta Project Aria Gen 1 wearable camera. Each sequence records a user interacting with a deformable object, spanning <strong>10+ object categories</strong> across diverse backgrounds, lighting conditions, and manipulation styles.
+        We collect <strong>19 egocentric deformable-object interactions</strong> with a Meta Project Aria Gen 1 wearable camera. Each contains 210 RGB frames (about seven seconds), totaling 3,990 frames. Every interaction follows a chronological 147/63 observed-future split: future frames support checkpoint selection for eight training interactions and evaluation for eleven held-out interactions.
       </p>
     </div>
 
@@ -470,16 +494,16 @@
         <div class="stat-label">Total Sequences</div>
       </div>
       <div class="stat-card reveal delay-2">
-        <div class="stat-num">10+</div>
-        <div class="stat-label">Object Categories</div>
+        <div class="stat-num">3,990</div>
+        <div class="stat-label">Total RGB Frames</div>
       </div>
       <div class="stat-card reveal delay-3">
         <div class="stat-num">~7 sec</div>
         <div class="stat-label">Clip Length</div>
       </div>
       <div class="stat-card reveal delay-4">
-        <div class="stat-num">30fps</div>
-        <div class="stat-label">1408 × 1408 px</div>
+        <div class="stat-num">70 / 30</div>
+        <div class="stat-label">Observed / Future %</div>
       </div>
     </div>
 
@@ -506,7 +530,7 @@
       </div>
       <div class="ds-item">
         <video muted loop playsinline preload="none"><source data-src="assets/Data_Examples/single_lift_greenmonster.mp4" type="video/mp4"></video>
-        <div class="ds-label">Green Monster · Single-Hand Lift</div>
+        <div class="ds-label">Avocado Plush · Single-Hand Lift</div>
       </div>
       <div class="ds-item">
         <video muted loop playsinline preload="none"><source data-src="assets/Data_Examples/single_lift_ovenmitt.mp4" type="video/mp4"></video>
