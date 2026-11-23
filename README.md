@@ -1,20 +1,14 @@
-<p align="center">
-  <h1 align="center">EgoPhys: Learning Generalizable Physics Models of Deformable Objects from Egocentric Video</h1>
+<div align="center">
+<h1>EgoPhys: Physics-Informed Digital Twins for Deformable Objects from Egocentric Video</h1>
 
-  <p align="center">
-    <a href="https://hjhyunjinkim.github.io">Hyunjin Kim</a> ·
-    <a href="https://rogerqi.github.io">Ri-Zhao Qiu</a> ·
-    <a href="https://luccachiang.github.io/">Guangqi Jiang</a> ·
-    <a href="https://xiaolonw.github.io/">Xiaolong Wang</a>
-  </p>
+[**Hyunjin Kim**](https://hjhyunjinkim.github.io/)<sup>1,2</sup> · [**Ri-Zhao Qiu**](https://rogerqi.github.io/)<sup>2</sup> · [**Rocktim Jyoti Das**](https://rocktimjyotidas.github.io/)<sup>1</sup> · [**Guangqi Jiang**](https://luccachiang.github.io/)<sup>2</sup>  [**Dinesh Manocha**](https://www.cs.umd.edu/people/dmanocha)<sup>2</sup> · [**Xiaolong Wang**](https://xiaolonw.github.io/)<sup>1</sup>
 
-  <p align="center">
-    UC San Diego
-  </p>
+<sup>1</sup>University of Maryland, College Park&emsp;&emsp;&emsp;&emsp;<sup>2</sup>UC San Diego
 
-  <h3 align="center">
-    <a href="#">Paper</a> |
-    <a href="#">Project Page</a>
-  </h3>
-  <p align="center"><b>Code coming soon!</b></p>
-</p>
+<a href="https://arxiv.org/abs/2606.16202"><img src='https://img.shields.io/badge/arXiv-EgoPhys-red' alt='Paper PDF'></a>
+<a href='https://hjhyunjinkim.github.io/EgoPhys/'><img src='https://img.shields.io/badge/Project_Page-EgoPhys-green' alt='Project Page'></a>
+</a>
+
+### Code Coming Soon!
+
+</div>
